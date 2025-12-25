@@ -11,15 +11,21 @@ def varphi_python(
         readable=True,
         resolve_path=True,
         help="Path to input Varphi source file"
-    )
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug/--no-debug",
+        help="Compile with debugging capabilities",
+    ),
 ):
     """Compile a Varphi source code file to Python"""
-    from varphi_devkit import compile_varphi
     from .core import VarphiToPythonCompiler
-    typer.echo(compile_varphi(
-        input_file.read_text(encoding="utf-8"),
-        VarphiToPythonCompiler()
-    ))
+    compiler = VarphiToPythonCompiler()
+    if debug:
+        compiler.toggle_compilation_with_debugging()
+    typer.echo(compiler.compile(
+        input_file.read_text(encoding="utf-8"),  
+    ).encode())
 
 def main():
     typer.run(varphi_python)

@@ -1,29 +1,51 @@
 import sys
-from .types import State, Tape, VarphiTapeCharacter, TuringMachine
-from .exceptions import VarphiInvalidTapeCharacterException, VarphiDomainError, VarphiTuringMachineHaltedException
+import json
+from .types import State, TuringMachine, VarphiIO
+from dataclasses import asdict
 
-def get_tape_from_stdin() -> Tape:
-    """Reads the input tape from standard input and returns it as a Tape object."""
-    initial_characters = []
-    while (input_character := sys.stdin.read(1)) not in {"\n", "\r"}:
-        if input_character == '1':
-            initial_characters.append(VarphiTapeCharacter.TALLY)
-        elif input_character == '0':
-            initial_characters.append(VarphiTapeCharacter.BLANK)
-        else:
-            raise VarphiInvalidTapeCharacterException(f"Invalid tape character {input_character} (ASCII #{ord(input_character)})")
-    return Tape(initial_characters)
+def send(msg: str):
+    data = msg.encode("utf-8")
+    sys.stdout.write(f"{len(data)}\n")
+    sys.stdout.flush()
+    sys.stdout.buffer.write(data)
+    sys.stdout.buffer.flush()
 
-def execute_turing_machine(initial_state: State | None, tape: Tape) -> None: 
-    """Construct the Turing machine given an initial state and run it.
+def _readline_bytes() -> bytes:
+    line = sys.stdin.buffer.readline()
+    if not line:
+        raise EOFError("Missing length")
+    return line
 
-    Reads the input tape from standard input and runs the Turing machine until it halts.
-    """
-    if initial_state is None:
-        raise VarphiDomainError("Error: Input provided to an empty Turing machine.")
-    turing_machine = TuringMachine(tape, initial_state)
-    while True:
-        try:
-            turing_machine.step()
-        except VarphiTuringMachineHaltedException:
+def _read_exact(n: int) -> bytes:
+    data = b""
+    while len(data) < n:
+        chunk = sys.stdin.buffer.read(n - len(data))
+        if not chunk:
             break
+        data += chunk
+    if len(data) != n:
+        raise EOFError("Incomplete message")
+    return data
+
+def recv() -> str:
+    line = _readline_bytes()
+    try:
+        n = int(line.strip())
+    except ValueError:
+        raise ValueError(f"Invalid length line: {line!r}")
+
+    body = _read_exact(n)
+    return body.decode("utf-8")
+
+
+
+def main(k: int, initial_state: State, debug: bool) -> None:
+    raw_input = recv()
+    io = VarphiIO(**json.loads(raw_input))
+    tm = TuringMachine(k, io, initial_state)
+    output = None
+    for output in tm.execute():
+        if debug:
+            print(asdict(output), file=sys.stderr)
+            input("Press Enter to continue...")
+    send(str(asdict(output)))
