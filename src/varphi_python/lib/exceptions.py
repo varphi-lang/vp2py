@@ -1,2 +1,5 @@
-class VarphiTuringMachineHaltedException(Exception):
-    """An exception raised when a Turing machine halts."""
+class VarphiRuntimeError(Exception):
+    pass
+
+class VarphiInvalidTapeCharacterError(VarphiRuntimeError):
+    pass
