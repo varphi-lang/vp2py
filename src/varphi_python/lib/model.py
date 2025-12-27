@@ -23,15 +23,17 @@ class Rule:
     """A single transition rule compiled into a State."""
     pattern: tuple[str, ...]
     instruction: Instruction
-    # Optimization: Pre-calculate variable counts for specificity scoring
     total_vars: int
     unique_vars: int
 
 
 class State:
+    name: str
+    rules: list[Rule]
+
     def __init__(self, name: str) -> None:
         self.name = name
-        self.rules: List[Rule] = []
+        self.rules = []
     
     def add_instruction(self, read_symbols: tuple[str, ...], instruction: Instruction) -> None:
         total_vars = sum(1 for s in read_symbols if s.startswith('$'))
@@ -172,6 +174,12 @@ class Head:
 
 
 class TuringMachine:
+    tapes: tuple[Tape, ...]
+    heads: tuple[Head, ...]
+    state: State
+    _next_instruction: Optional[Instruction]
+    _current_bindings: dict[str, str]
+    
     def __init__(self, k: int, tapes: tuple[Tape, ...], initial_state: State) -> None:
         self.tapes = tapes
         # Pad tapes to k if necessary
@@ -180,8 +188,8 @@ class TuringMachine:
         
         self.heads = tuple(Head(t) for t in self.tapes[:k])
         self.state = initial_state
-        self._next_instruction: Optional[Instruction] = None
-        self._current_bindings: Dict[str, str] = {}
+        self._next_instruction = None
+        self._current_bindings = {}
 
     def peek(self) -> bool:
         """
