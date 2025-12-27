@@ -1,4 +1,4 @@
-from varphi_python.lib.model import Tape, Head, TuringMachine, State
+from varphi_python.lib import Tape, Head, TuringMachine, State
 from varphi_devkit import BLANK, LEFT, RIGHT, STAY
 
 class TestTape:
