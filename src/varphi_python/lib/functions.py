@@ -1,29 +1,39 @@
 import sys
-from .types import State, Tape, VarphiTapeCharacter, TuringMachine
-from .exceptions import VarphiInvalidTapeCharacterException, VarphiDomainError, VarphiTuringMachineHaltedException
+from .io import VarphiIO, DebugView
+from .model import State, TuringMachine
 
-def get_tape_from_stdin() -> Tape:
-    """Reads the input tape from standard input and returns it as a Tape object."""
-    initial_characters = []
-    while (input_character := sys.stdin.read(1)) not in {"\n", "\r"}:
-        if input_character == '1':
-            initial_characters.append(VarphiTapeCharacter.TALLY)
-        elif input_character == '0':
-            initial_characters.append(VarphiTapeCharacter.BLANK)
-        else:
-            raise VarphiInvalidTapeCharacterException(f"Invalid tape character {input_character} (ASCII #{ord(input_character)})")
-    return Tape(initial_characters)
+def main(k: int, initial_state: State, debug: bool) -> None:
+    io = VarphiIO.from_stdin()
+    tm = TuringMachine(k, io.tapes, initial_state)
+    time_complexity = 1
+    
+    # Define a separator line
+    SEPARATOR = "—" * 60 
 
-def execute_turing_machine(initial_state: State | None, tape: Tape) -> None: 
-    """Construct the Turing machine given an initial state and run it.
+    while tm.peek():
+        if debug:
+            # Print a visual delimiter and the current step number
+            print(f"\n{SEPARATOR}", file=sys.stderr)
+            print(f"STEP {time_complexity} [State: {tm.state.name}]", file=sys.stderr)
+            print(f"{SEPARATOR}", file=sys.stderr)
+            
+            # Print the machine state
+            print(DebugView(tm), file=sys.stderr)
+            
+            # Distinct prompt for user action
+            try:
+                input("\n>> Press ENTER to step forward...")
+            except (KeyboardInterrupt, EOFError):
+                print("\nInterrupted.", file=sys.stderr)
+                return
 
-    Reads the input tape from standard input and runs the Turing machine until it halts.
-    """
-    if initial_state is None:
-        raise VarphiDomainError("Error: Input provided to an empty Turing machine.")
-    turing_machine = TuringMachine(tape, initial_state)
-    while True:
-        try:
-            turing_machine.step()
-        except VarphiTuringMachineHaltedException:
-            break
+        tm.step()
+        time_complexity += 1
+
+    if sys.stdout.isatty():
+        print(f"\n{SEPARATOR}", file=sys.stderr)
+        print(f"HALTED at state '{tm.state.name}'", file=sys.stderr)
+        print(f"Time complexity: {time_complexity} steps", file=sys.stderr)
+        print(f"Space complexity: {sum(head.space_complexity() for head in tm.heads)} cells visited", file=sys.stderr)
+
+    VarphiIO(tm.tapes).print()

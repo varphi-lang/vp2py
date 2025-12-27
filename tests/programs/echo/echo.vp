@@ -1,0 +1,5 @@
+// Logic: Read any char ($x), write it back ($x), move right.
+// Stops when a BLANK is hit.
+
+start   ($x)     start   ($x)     (RIGHT)
+start   (BLANK)  halt    (BLANK)  (STAY)

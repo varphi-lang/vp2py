@@ -1,0 +1,43 @@
+from varphi_python.lib import State, Instruction, main
+
+# --- State Definitions ---
+halt = State('halt')
+compare = State('compare')
+
+# --- Instruction Definitions ---
+compare.add_instruction(
+    read_symbols=('$1', '$1', '_'),
+    instruction=Instruction(
+    next_state=compare,
+    write_symbols=('$1', '$1', 'Y'),
+    shift_directions=('RIGHT', 'RIGHT', 'RIGHT'),
+    line_number=5
+))
+
+compare.add_instruction(
+    read_symbols=('$1', '$2', '_'),
+    instruction=Instruction(
+    next_state=compare,
+    write_symbols=('$1', '$2', 'N'),
+    shift_directions=('RIGHT', 'RIGHT', 'RIGHT'),
+    line_number=9
+))
+
+compare.add_instruction(
+    read_symbols=('_', '_', '_'),
+    instruction=Instruction(
+    next_state=halt,
+    write_symbols=('_', '_', '_'),
+    shift_directions=('STAY', 'STAY', 'STAY'),
+    line_number=12
+))
+
+
+# --- Runtime Setup ---
+initial_state = compare
+k = 3
+debug_mode = False
+
+if __name__ == "__main__":
+    main(k, initial_state, debug_mode)
+
