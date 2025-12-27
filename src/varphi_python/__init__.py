@@ -1,1 +1,3 @@
-from .core import VarphiToPythonCompiler
+from .compiler import VarphiToPythonCompiler
+
+__all__ = ["VarphiToPythonCompiler"]
