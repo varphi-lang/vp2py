@@ -6,12 +6,14 @@ from collections import defaultdict
 
 from varphi_devkit import BLANK, LEFT, RIGHT
 
+
 @dataclass(frozen=True)
 class Instruction:
     """
     Runtime representation of the 'action' part of a transition.
     The compiler's VarphiTransition is split: 'read' goes to Rule, 'action' goes here.
     """
+
     next_state: State
     write_symbols: tuple[str, ...]
     shift_directions: tuple[str, ...]
@@ -21,35 +23,44 @@ class Instruction:
 @dataclass
 class Rule:
     """A single transition rule compiled into a State."""
+
     pattern: tuple[str, ...]
     instruction: Instruction
-    # Optimization: Pre-calculate variable counts for specificity scoring
     total_vars: int
     unique_vars: int
 
 
 class State:
+    name: str
+    rules: list[Rule]
+
     def __init__(self, name: str) -> None:
         self.name = name
-        self.rules: List[Rule] = []
-    
-    def add_instruction(self, read_symbols: tuple[str, ...], instruction: Instruction) -> None:
-        total_vars = sum(1 for s in read_symbols if s.startswith('$'))
-        unique_vars = len(set(s for s in read_symbols if s.startswith('$')))
-        
-        self.rules.append(Rule(
-            pattern=read_symbols, 
-            instruction=instruction,
-            total_vars=total_vars,
-            unique_vars=unique_vars
-        ))
-    
-    def get_instruction(self, tape_readings: tuple[str, ...]) -> Optional[Tuple[Instruction, Dict[str, str]]]:
+        self.rules = []
+
+    def add_instruction(
+        self, read_symbols: tuple[str, ...], instruction: Instruction
+    ) -> None:
+        total_vars = sum(1 for s in read_symbols if s.startswith("$"))
+        unique_vars = len(set(s for s in read_symbols if s.startswith("$")))
+
+        self.rules.append(
+            Rule(
+                pattern=read_symbols,
+                instruction=instruction,
+                total_vars=total_vars,
+                unique_vars=unique_vars,
+            )
+        )
+
+    def get_instruction(
+        self, tape_readings: tuple[str, ...]
+    ) -> Optional[Tuple[Instruction, Dict[str, str]]]:
         candidates = []
 
         for rule in self.rules:
             bindings = self._check_match(rule.pattern, tape_readings)
-            
+
             if bindings is not None:
                 # Append (Rule, Bindings, SpecificityScore)
                 candidates.append((rule, bindings, (rule.total_vars, rule.unique_vars)))
@@ -61,20 +72,22 @@ class State:
         # More variables give a higher (worse score)
         # Unique variables are used to break ties; the less unique variables, the better, since the rule is more specific in that case; e.g., ($1, $2) is less specific than ($1, $1)
         best_score = min(c[2] for c in candidates)
-        
+
         # Filter for only the best candidates
         best_candidates = [c for c in candidates if c[2] == best_score]
-        
+
         # Nondeterministically select a candidate
         chosen = random.choice(best_candidates)
         return chosen[0].instruction, chosen[1]
 
-    def _check_match(self, pattern: tuple[str, ...], readings: tuple[str, ...]) -> Optional[Dict[str, str]]:
+    def _check_match(
+        self, pattern: tuple[str, ...], readings: tuple[str, ...]
+    ) -> Optional[Dict[str, str]]:
         """Checks match. Relies on compiler guarantees for length consistency."""
         bindings = {}
-        
+
         for p_sym, r_sym in zip(pattern, readings):
-            if p_sym.startswith('$'):
+            if p_sym.startswith("$"):
                 if p_sym not in bindings:
                     bindings[p_sym] = r_sym
                 elif bindings[p_sym] != r_sym:
@@ -83,7 +96,7 @@ class State:
             elif p_sym != r_sym:
                 # Literal mismatch
                 return None
-        
+
         return bindings
 
     def __repr__(self) -> str:
@@ -99,10 +112,10 @@ class Tape:
         self._tape = defaultdict(lambda: BLANK)
         self._min_idx = None
         self._max_idx = None
-        
+
         for i, char in enumerate(initial_values):
             self[i] = char
-    
+
     def __getitem__(self, index: int) -> str:
         self._update_bounds(index)
         return self._tape[index]
@@ -123,7 +136,7 @@ class Tape:
         if self._min_idx is None or self._max_idx is None:
             return ""
         return "".join(self._tape[i] for i in range(self._min_idx, self._max_idx + 1))
-    
+
     @property
     def is_empty(self) -> bool:
         return self._min_idx is None
@@ -139,7 +152,7 @@ class Head:
         self.tape = tape
         self.index = 0
         self.new_accessed_cells = set()
-        
+
         if tape.is_empty:
             self.user_input_cell_range = None
         else:
@@ -158,7 +171,7 @@ class Head:
     def write(self, value: str) -> None:
         self._check_access()
         self.tape[self.index] = value
-    
+
     def _check_access(self):
         if self.user_input_cell_range is None:
             self.new_accessed_cells.add(self.index)
@@ -172,16 +185,22 @@ class Head:
 
 
 class TuringMachine:
+    tapes: tuple[Tape, ...]
+    heads: tuple[Head, ...]
+    state: State
+    _next_instruction: Optional[Instruction]
+    _current_bindings: dict[str, str]
+
     def __init__(self, k: int, tapes: tuple[Tape, ...], initial_state: State) -> None:
         self.tapes = tapes
         # Pad tapes to k if necessary
         while len(self.tapes) < k:
             self.tapes += (Tape([]),)
-        
+
         self.heads = tuple(Head(t) for t in self.tapes[:k])
         self.state = initial_state
-        self._next_instruction: Optional[Instruction] = None
-        self._current_bindings: Dict[str, str] = {}
+        self._next_instruction = None
+        self._current_bindings = {}
 
     def peek(self) -> bool:
         """
@@ -190,12 +209,12 @@ class TuringMachine:
         """
         reads = tuple(h.read() for h in self.heads)
         result = self.state.get_instruction(reads)
-        
+
         if result is None:
             self._next_instruction = None
             self._current_bindings = {}
             return False
-        
+
         self._next_instruction, self._current_bindings = result
         return True
 
@@ -203,7 +222,7 @@ class TuringMachine:
         """Executes the move determined by peek()."""
         instr = self._next_instruction
         bindings = self._current_bindings
-        
+
         if instr is None:
             return
 
@@ -212,7 +231,7 @@ class TuringMachine:
         for i, head in enumerate(self.heads):
             sym = instr.write_symbols[i]
             val_to_write = sym
-            if sym.startswith('$'):
+            if sym.startswith("$"):
                 val_to_write = bindings[sym]
             head.write(val_to_write)
             head.move(instr.shift_directions[i])

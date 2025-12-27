@@ -20,6 +20,7 @@ if __name__ == "__main__":
     main(k, initial_state, debug_mode)
 """
 
+
 class VarphiToPythonCompiler(VarphiCompiler):
     _initial_state: Optional[str]
     _seen_states: Set[str]
@@ -52,7 +53,7 @@ class VarphiToPythonCompiler(VarphiCompiler):
         # Quote symbols for Python output
         read_str = "(" + ", ".join(f"'{s}'" for s in t.read_symbols)
         read_str += ",)" if len(t.read_symbols) == 1 else ")"
-        
+
         write_str = "(" + ", ".join(f"'{s}'" for s in t.write_symbols)
         write_str += ",)" if len(t.write_symbols) == 1 else ")"
 
@@ -69,13 +70,15 @@ class VarphiToPythonCompiler(VarphiCompiler):
         self._instructions_code.append(code)
 
     def generate_compiled_program(self) -> str:
-        state_defs = "\n".join(f"{name} = State('{name}')" for name in self._seen_states)
+        state_defs = "\n".join(
+            f"{name} = State('{name}')" for name in self._seen_states
+        )
         instr_defs = "\n".join(self._instructions_code)
-        
+
         return TEMPLATE.format(
             state_definitions=state_defs,
             instruction_definitions=instr_defs,
             initial_state=self._initial_state,
             num_tapes=self._number_of_tapes,
-            debug_mode=self.debug_mode
+            debug_mode=self.debug_mode,
         )
