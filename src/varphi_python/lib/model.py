@@ -63,14 +63,14 @@ class State:
 
             if bindings is not None:
                 # Append (Rule, Bindings, SpecificityScore)
-                candidates.append((rule, bindings, (rule.total_vars, rule.unique_vars)))
+                candidates.append((rule, bindings, (rule.unique_vars, rule.total_vars)))
 
         if not candidates:
             return None
 
         # Find the lowest (best) score
-        # More variables give a higher (worse score)
-        # Unique variables are used to break ties; the less unique variables, the better, since the rule is more specific in that case; e.g., ($1, $2) is less specific than ($1, $1)
+        # More unique variables give a higher (worse) score
+        # The number of slots in a tuple with a variable are used to break ties
         best_score = min(c[2] for c in candidates)
 
         # Filter for only the best candidates
