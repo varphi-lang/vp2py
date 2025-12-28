@@ -96,3 +96,20 @@ class TestSpecificityScoring:
         # Head should still be at 0, containing 'Q' (wrote 'Q' back)
         assert tm.tapes[0][0] == "Q"
         assert tm.state.name == "end"
+
+    def test_degrees_of_freedom_priority(self):
+        s = State("conflict")
+        i_equality_heavy = make_instr("equality_winner")
+        i_literal_mixed = make_instr("mixed_loser")
+
+        # Rule A: ($x, $x, $x) -> Score: (Unique=1, Total=3)
+        s.add_instruction(("$x", "$x", "$x"), i_equality_heavy)
+        
+        # Rule B: ($x, $y, A) -> Score: (Unique=2, Total=2)
+        s.add_instruction(("$x", "$y", "A"), i_literal_mixed)
+
+        # Input: (A, A, A) matches both rules.
+        instr, bindings = s.get_instruction(("A", "A", "A"))
+        
+        assert instr.next_state.name == "equality_winner"
+        assert bindings == {"$x": "A"}
