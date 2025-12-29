@@ -85,6 +85,6 @@ class DebugView:
             
             # Note: The prefix "Tape i: " must be consistent length for perfect alignment.
             # If you have > 10 tapes, you might want to use f"Tape {i:<2}: "
-            lines.append(f"Tape {i}: {''.join(chars)}")
+            lines.append(f"Tape {i + 1}: {''.join(chars)}")
 
         return "\n".join(lines)
