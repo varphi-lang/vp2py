@@ -34,9 +34,9 @@ def main(k: int, initial_state: State, debug: bool) -> None:
     if sys.stdout.isatty():
         print(f"\n{SEPARATOR}", file=sys.stderr)
         print(f"HALTED at state '{tm.state.name}'", file=sys.stderr)
-        print(f"Time complexity: {time_complexity} steps", file=sys.stderr)
+        print(f"Time taken: {time_complexity} steps", file=sys.stderr)
         print(
-            f"Space complexity: {sum(head.space_complexity() for head in tm.heads)} cells visited",
+            f"Space used: {sum(head.space_complexity() for head in tm.heads)} cells",
             file=sys.stderr,
         )
 

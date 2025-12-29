@@ -4,7 +4,7 @@ from varphi_devkit import BLANK, LEFT, RIGHT, STAY
 
 class TestTape:
     def test_tape_initialization(self):
-        t = Tape(["a", "b", "c"])
+        t = Tape("abc")
         assert t[0] == "a"
         assert t[1] == "b"
         assert t[2] == "c"
@@ -14,7 +14,7 @@ class TestTape:
         assert t[-100] == BLANK
 
     def test_tape_dynamic_growth(self):
-        t = Tape([])
+        t = Tape("")
         t[5] = "x"
         assert t.to_string() == "x"
 
@@ -26,7 +26,7 @@ class TestTape:
         assert len(t.to_string()) == 8
 
     def test_tape_updates_bounds(self):
-        t = Tape(["a"])
+        t = Tape("a")
         assert t._min_idx == 0
         assert t._max_idx == 0
 
@@ -39,7 +39,7 @@ class TestTape:
 
 class TestHead:
     def test_head_movement(self):
-        t = Tape(["a", "b"])
+        t = Tape("ab")
         h = Head(t)
         assert h.index == 0
         assert h.read() == "a"
@@ -55,7 +55,7 @@ class TestHead:
         assert h.index == 0
 
     def test_space_complexity_tracking(self):
-        t = Tape(["1", "2", "3"])
+        t = Tape("123")
         h = Head(t)
 
         # Reading user-input shouldn't increase complexity
@@ -79,7 +79,7 @@ class TestMachineBasics:
     def test_halt_condition(self):
         # A machine with no rules should halt immediately
         s1 = State("start")
-        tm = TuringMachine(1, (Tape(["a"]),), s1)
+        tm = TuringMachine(1, (Tape("a"),), s1)
 
         assert tm.peek() is False
         assert tm._next_instruction is None

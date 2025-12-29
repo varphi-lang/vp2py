@@ -88,7 +88,7 @@ class TestSpecificityScoring:
         )
         s.add_instruction(("$x",), instr)
 
-        tm = TuringMachine(1, (Tape(["Q"]),), s)
+        tm = TuringMachine(1, (Tape("Q"),), s)
 
         assert tm.peek() is True
         tm.step()

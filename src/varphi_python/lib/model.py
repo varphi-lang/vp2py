@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional, Iterable, Set
 import random
 from collections import defaultdict
+from .exceptions import VarphiRuntimeError
 
 from varphi_devkit import BLANK, LEFT, RIGHT
 
@@ -108,12 +109,17 @@ class Tape:
     _min_idx: Optional[int]
     _max_idx: Optional[int]
 
-    def __init__(self, initial_values: Iterable[str]) -> None:
+    def __init__(self, initial_values: str) -> None:
         self._tape = defaultdict(lambda: BLANK)
         self._min_idx = None
         self._max_idx = None
 
+        initial_values = initial_values.strip("_")
         for i, char in enumerate(initial_values):
+            if char != '_' and not char.isalnum():
+                # Only blanks and alphanumericals are allowed
+                raise VarphiRuntimeError(f"Runtime Error: Invalid tape character '{char}'.")
+                exit(1)
             self[i] = char
 
     def __getitem__(self, index: int) -> str:
@@ -135,7 +141,7 @@ class Tape:
     def to_string(self) -> str:
         if self._min_idx is None or self._max_idx is None:
             return ""
-        return "".join(self._tape[i] for i in range(self._min_idx, self._max_idx + 1))
+        return "".join(self._tape[i] for i in range(self._min_idx, self._max_idx + 1)).strip('_')
 
     @property
     def is_empty(self) -> bool:
@@ -195,7 +201,7 @@ class TuringMachine:
         self.tapes = tapes
         # Pad tapes to k if necessary
         while len(self.tapes) < k:
-            self.tapes += (Tape([]),)
+            self.tapes += (Tape(""),)
 
         self.heads = tuple(Head(t) for t in self.tapes[:k])
         self.state = initial_state

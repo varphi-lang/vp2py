@@ -1,6 +1,6 @@
 from .model import State, Instruction, Tape, Head, TuringMachine
 from .functions import main
-from .exceptions import VarphiRuntimeError, VarphiInvalidTapeCharacterError
+from .exceptions import VarphiRuntimeError
 
 __all__ = [
     "State",
