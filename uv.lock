@@ -216,19 +216,28 @@ wheels = [
 
 [[package]]
 name = "varphi-devkit"
-version = "2.0.6"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "antlr4-python3-runtime" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/31/72c03fdb16372ba511937cc67ec13aae984c76fdb2df81fee47eb53caed7/varphi_devkit-2.0.6.tar.gz", hash = "sha256:b67bbdc42954ce1981f88ce063d52d0e8e911d0b449e8975568fddde37004358", size = 11183, upload-time = "2025-12-28T00:12:52.06Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a5/51/d554b86c3dd2995427196fd299470435dd70043b93dd4dddd51f1bdbe394/varphi_devkit-3.0.0.tar.gz", hash = "sha256:bec3de97cf67b135d9626c04fd56784239e18d125e2360a5da3821b9b9d78517", size = 13579, upload-time = "2026-08-23T01:15:38.534Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/64/ab/bb9e3316cc6df81e8f4bfad9e411f1aa6cfa501da4e617fe3814675dc51f/varphi_devkit-2.0.6-py3-none-any.whl", hash = "sha256:11a88ed11a1bf5df3d511a9b9d339248990164b63ee3b54fa74aaf3379301f2e", size = 15324, upload-time = "2025-12-28T00:12:50.624Z" },
+    { url = "https://files.pythonhosted.org/packages/50/a3/f8814ad0084bc2f4283b91e74e92f37ceb4da04a7386d528dde9713c1df8/varphi_devkit-3.0.0-py3-none-any.whl", hash = "sha256:0d90cad661dcbed0761b39626e0d6ab21643703fc99716c8d540c88c04b8ba3b", size = 18084, upload-time = "2026-08-23T01:15:37.283Z" },
 ]
 
 [[package]]
-name = "varphi-python"
-version = "2.0.6"
+name = "vermin"
+version = "1.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/7b/2c1b403f2a844e1acb36694fc336e323df742f7f752edb4188311ad43f9e/vermin-1.8.0.tar.gz", hash = "sha256:3621955ac2a2950175c5b4a9b2fc3bd24bd416da0388893c9eb6971264e4ca1f", size = 99913, upload-time = "2025-11-20T17:29:31.509Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e6/fd/6d2167767488e162efd01300a679c7f7d913dbb65baa0b15760ebb369854/vermin-1.8.0-py3-none-any.whl", hash = "sha256:6f2b98ad697a16ed3442e81a0f0baabfc38c185b78aaab1b1fecd87bdd6640b8", size = 98030, upload-time = "2025-11-20T17:29:29.931Z" },
+]
+
+[[package]]
+name = "vp2py"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "typer" },
@@ -239,16 +248,18 @@ dependencies = [
 dev = [
     { name = "black" },
     { name = "pytest" },
+    { name = "vermin" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "typer", specifier = ">=0.21.0" },
-    { name = "varphi-devkit", specifier = "==2.0.6" },
+    { name = "typer" },
+    { name = "varphi-devkit", specifier = ">=3.0.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "black", specifier = ">=25.12.0" },
-    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "black" },
+    { name = "pytest" },
+    { name = "vermin" },
 ]

@@ -3,25 +3,26 @@ from .io import VarphiIO, DebugView
 from .model import State, TuringMachine
 
 
-def main(k: int, initial_state: State, debug: bool) -> None:
-    io = VarphiIO.from_stdin()
-    tm = TuringMachine(k, io.tapes, initial_state)
-    time_complexity = 1
-
-    # Define a separator line
+def main(
+    k: int,
+    initial_state: State,
+    state_registry: dict,
+    debug: bool,
+    blank_char: str = "_",
+) -> None:
+    io = VarphiIO.from_stdin(blank_char)
+    tm = TuringMachine(k, io.tapes, initial_state, state_registry)
+    time_complexity = 0
     SEPARATOR = "—" * 60
 
     while tm.peek():
         if debug:
-            # Print a visual delimiter and the current step number
             print(f"\n{SEPARATOR}", file=sys.stderr)
-            print(f"STEP {time_complexity} [State: {tm.state.name}]", file=sys.stderr)
+            print(
+                f"STEP {time_complexity + 1} [State: {tm.state.name}]", file=sys.stderr
+            )
             print(f"{SEPARATOR}", file=sys.stderr)
-
-            # Print the machine state
-            print(DebugView(tm), file=sys.stderr)
-
-            # Distinct prompt for user action
+            print(DebugView(tm, blank_char), file=sys.stderr)
             try:
                 input("\n>> Press ENTER to step forward...")
             except (KeyboardInterrupt, EOFError):
@@ -40,4 +41,4 @@ def main(k: int, initial_state: State, debug: bool) -> None:
             file=sys.stderr,
         )
 
-    VarphiIO(tm.tapes).print()
+    VarphiIO(tm.tapes).print(blank_char)
