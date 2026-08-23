@@ -1,6 +1,6 @@
 [project]
 name = "vp2py"
-version = "3.0.0"
+version = "3.0.1"
 description = "An implementation of a Varphi-to-Python compiler."
 readme = "README.md"
 authors = [
