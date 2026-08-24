@@ -41,4 +41,4 @@ def main(
             file=sys.stderr,
         )
 
-    VarphiIO(tm.tapes).print(blank_char)
+    VarphiIO(tm.tapes).print(blank_char, tm.state.name)

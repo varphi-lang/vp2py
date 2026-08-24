@@ -1,7 +1,7 @@
 from __future__ import annotations
 import sys
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Optional
 from .model import Tape, TuringMachine
 from .exceptions import VarphiRuntimeError
 from varphi_devkit import BuiltinSymbol, Character
@@ -49,7 +49,7 @@ class VarphiIO:
 
         return VarphiIO(tuple(tapes))
 
-    def print(self, blank_char: str) -> None:
+    def print(self, blank_char: str, final_state: Optional[str] = None) -> None:
         show_labels = sys.stdout.isatty()
         if show_labels:
             print("Number of tapes: ", end="", file=sys.stderr, flush=True)
@@ -60,6 +60,11 @@ class VarphiIO:
             if show_labels:
                 print(f"Tape {i + 1}: ", end="", file=sys.stderr, flush=True)
             print(tape.to_string(blank_char))
+
+        if final_state is not None:
+            if show_labels:
+                print("Final State: ", end="", file=sys.stderr, flush=True)
+            print(final_state)
 
 
 @dataclass
