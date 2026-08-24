@@ -2,7 +2,7 @@ from .model import State, Tape, Head, TuringMachine
 from .functions import main
 from .exceptions import VarphiRuntimeError
 
-__version__ = "3.0.2"
+__version__ = "3.0.3"
 
 __all__ = [
     "State",

@@ -688,14 +688,14 @@ wheels = [
 
 [[package]]
 name = "varphi-devkit"
-version = "3.0.0"
+version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "antlr4-python3-runtime" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a5/51/d554b86c3dd2995427196fd299470435dd70043b93dd4dddd51f1bdbe394/varphi_devkit-3.0.0.tar.gz", hash = "sha256:bec3de97cf67b135d9626c04fd56784239e18d125e2360a5da3821b9b9d78517", size = 13579, upload-time = "2026-08-23T01:15:38.534Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/c7/caed370aff91c6ac9b29212e02c9d9c43cfff4cc8979b978b64ecc07d65e/varphi_devkit-3.0.1.tar.gz", hash = "sha256:f145f2198d70ee8b42227954bc4c28e376ad9ac4d22043c4b88caf85d19a79ab", size = 13587, upload-time = "2026-08-23T18:16:35.01Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/a3/f8814ad0084bc2f4283b91e74e92f37ceb4da04a7386d528dde9713c1df8/varphi_devkit-3.0.0-py3-none-any.whl", hash = "sha256:0d90cad661dcbed0761b39626e0d6ab21643703fc99716c8d540c88c04b8ba3b", size = 18084, upload-time = "2026-08-23T01:15:37.283Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/f9/7530c54c713e14905db942665bdf83ad4102eb3e9788290d85c1670ba782/varphi_devkit-3.0.1-py3-none-any.whl", hash = "sha256:f46de2103884786618303a10be88985c59188aaedecd0d24a82b09434f1e0626", size = 18115, upload-time = "2026-08-23T18:16:33.959Z" },
 ]
 
 [[package]]
@@ -709,7 +709,7 @@ wheels = [
 
 [[package]]
 name = "vp2py"
-version = "3.0.1"
+version = "3.0.3"
 source = { editable = "." }
 dependencies = [
     { name = "typer" },
@@ -729,7 +729,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "typer" },
-    { name = "varphi-devkit", specifier = ">=3.0.0" },
+    { name = "varphi-devkit", specifier = ">=3.0.1" },
 ]
 
 [package.metadata.requires-dev]
