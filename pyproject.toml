@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.10"
 dependencies = [
     "typer",
-    "varphi-devkit>=3.0.0",
+    "varphi-devkit>=3.0.1",
 ]
 
 [project.scripts]
