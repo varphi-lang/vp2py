@@ -1,5 +1,5 @@
 from .model import State, Tape, Head, TuringMachine
-from .functions import main
+from .functions import main, run_machine
 from .exceptions import VarphiRuntimeError
 
 
@@ -9,5 +9,6 @@ __all__ = [
     "Head",
     "TuringMachine",
     "main",
+    "run_machine",
     "VarphiRuntimeError",
 ]
