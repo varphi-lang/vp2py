@@ -1,6 +1,6 @@
 [project]
 name = "vp2py"
-version = "3.0.3"
+version = "4.0.0"
 description = "An implementation of a Varphi-to-Python compiler."
 readme = "README.md"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.10"
 dependencies = [
     "typer",
-    "varphi-devkit>=3.0.1",
+    "varphi-devkit>=4.0.0",
 ]
 
 [project.scripts]

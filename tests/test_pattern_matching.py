@@ -13,7 +13,6 @@ def make_transition(
     if write_symbols is None:
         write_symbols = tuple(Character("w") for _ in read_symbols)
 
-    # Notice we don't pass `specificity` because __post_init__ handles it automatically!
     return VarphiTransition(
         current_state=current_state,
         read_symbols=read_symbols,
@@ -64,11 +63,11 @@ class TestSpecificityScoring:
     def test_literal_vs_variable(self):
         s = State("conflict")
 
-        # Rule 1: ('A', 'A') - Score: (0 vars, 0 unique) -> Best
+        # Rule 1: (A, A) - Score: (0 vars, 0 unique) -> Best
         t_literal = make_transition(
             (Character("A"), Character("A")), next_state="literal_winner"
         )
-        # Rule 2: ('A', $x)  - Score: (1 var, 1 unique)  -> Worse
+        # Rule 2: (A, $x)  - Score: (1 var, 1 unique)  -> Worse
         t_var = make_transition(
             (Character("A"), Variable(0)), next_state="variable_loser"
         )
