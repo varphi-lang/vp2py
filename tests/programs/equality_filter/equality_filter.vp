@@ -1,10 +1,10 @@
 // Tapes: 3 (Input 1, Input 2, Output 3)
 
 // Case 1: Match
-compare ($x, $x, BLANK)  compare  ($x, $x, 'Y')  (RIGHT, RIGHT, RIGHT)
+compare ($x, $x, BLANK)  compare  ($x, $x, Y)  (RIGHT, RIGHT, RIGHT)
 
 // Case 2: Mismatch
-compare ($x, $y, BLANK)  compare  ($x, $y, 'N')  (RIGHT, RIGHT, RIGHT)
+compare ($x, $y, BLANK)  compare  ($x, $y, N)  (RIGHT, RIGHT, RIGHT)
 
 // Halting
 compare (BLANK, BLANK, BLANK)  halt  (BLANK, BLANK, BLANK) (STAY, STAY, STAY)
